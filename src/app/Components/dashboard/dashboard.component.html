@@ -1,0 +1,90 @@
+<section class="page-section" style="padding-top: 12rem;">
+    <div class="container">
+      <h2 class="section-heading text-uppercase">Dashboard</h2>
+      <h3 class="section-subheading text-muted">Welcome, {{ currentUser?.nom }}</h3>
+      
+      <div class="row mb-4">
+        <div class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Active Campaigns</h5>
+              <p class="card-text display-4">{{ activeCampaigns.length }}</p>
+              <a routerLink="/campaigns" class="btn btn-primary">View All Campaigns</a>
+            </div>
+          </div>
+        </div>
+        
+        <div  class="col-md-4 mb-4"> <!--*ngIf="isAdvertiser"-->
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">My Campaigns</h5>
+              <p class="card-text display-4">{{ myCampaigns.length }}</p>
+              <a routerLink="/campaigns/new" class="btn btn-primary">Create New Campaign</a>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="isPanelist" class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Participating Campaigns</h5>
+              <p class="card-text display-4">{{ participatingCampaigns.length }}</p>
+              <a routerLink="/campaigns" class="btn btn-primary">Find Campaigns</a>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="isAdmin" class="col-md-4 mb-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Total Users</h5>
+              <p class="card-text display-4">{{ totalUsers }}</p>
+              <a href="#" class="btn btn-primary">Manage Users</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <h4 class="mb-3">Recent Campaigns</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Status</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let campaign of recentCampaigns">
+                  <td>{{ campaign.nom }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'bg-success': campaign.statut === 'ACTIVE',
+                      'bg-warning': campaign.statut === 'PLANIFIEE',
+                      'bg-secondary': campaign.statut === 'TERMINEE'
+                    }">{{ campaign.statut }}</span>
+                  </td>
+                  <td>{{ campaign.dateDebut | date }}</td>
+                  <td>{{ campaign.dateFin | date }}</td>
+                  <td>
+                    <a [routerLink]="['/campaigns', campaign.id]" class="btn btn-sm btn-primary me-2">View</a>
+               <!--*ngIf="isAdvertiser && campaign.statut !== 'TERMINEE'"-->     <a  
+                       [routerLink]="['/campaigns/edit', campaign.id]" 
+                       class="btn btn-sm btn-secondary">Edit</a>
+                  </td>
+                </tr>
+                <tr *ngIf="recentCampaigns.length === 0">
+                  <td colspan="5" class="text-center">No campaigns found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>

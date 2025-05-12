@@ -1,0 +1,33 @@
+<div class="container mt-4" style="padding-top: 12rem;">
+    <h2>Questions</h2>
+  
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="mb-4">
+      <div class="mb-3">
+        <label for="texte" class="form-label">text</label>
+        <input formControlName="texte" id="texte" class="form-control" />
+        <div *ngIf="questionForm?.controls?.['texte']?.invalid && questionForm?.controls?.['texte']?.touched">
+          text is required.
+        </div>
+      </div>
+  
+  
+      <button type="submit" class="btn btn-primary" [disabled]="submitting || questionForm.invalid">
+        {{ submitting ? 'Submitting...' : 'Add Question' }}
+      </button>
+    </form>
+  
+    <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  
+    <ul *ngIf="questions.length > 0" class="list-group">
+      <li *ngFor="let question of questions" class="list-group-item d-flex justify-content-between">
+        <div>
+          <strong>{{ question.texte }}</strong><br />
+          
+        </div>
+        <button class="btn btn-sm btn-danger" (click)="deleteQuestion(question.id!)">Delete</button>
+      </li>
+    </ul>
+  
+    <div *ngIf="!loading && questions.length === 0">No questions available.</div>
+  </div>
+  

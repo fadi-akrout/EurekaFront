@@ -1,0 +1,184 @@
+<section class="page-section"  style="padding-top: 12rem;">
+    <div class="container" *ngIf="campaign">
+      <div class="row align-items-center mb-5">
+        <div class="col-md-6">
+          <h2 class="section-heading">{{ campaign.nom }}</h2>
+          <span class="badge mb-3" [ngClass]="{
+            'bg-success': campaign.statut === 'ACTIVE',
+            'bg-warning': campaign.statut === 'PLANIFIEE',
+            'bg-secondary': campaign.statut === 'TERMINEE'
+          }">{{ campaign.statut }}</span>
+          <p class="lead">{{ campaign.description }}</p>
+          <div class="d-flex mb-3">
+            <div class="me-4">
+              <strong>Start Date:</strong>
+              <p>{{ campaign.dateDebut | date }}</p>
+            </div>
+            <div>
+              <strong>End Date:</strong>
+              <p>{{ campaign.dateFin | date }}</p>
+            </div>
+          </div>
+          
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <a *ngIf="isAdvertiser && campaign.statut === 'PLANIFIEE'" 
+               (click)="startCampaign()" 
+               class="btn btn-success">
+              <i class="fas fa-play me-2"></i>Start Campaign
+            </a>
+            
+            <a *ngIf="isAdvertiser && campaign.statut === 'ACTIVE'" 
+               (click)="endCampaign()" 
+               class="btn btn-warning">
+              <i class="fas fa-stop me-2"></i>End Campaign
+            </a>
+            
+            <a *ngIf="isAdvertiser && campaign.statut !== 'TERMINEE'" 
+               [routerLink]="['/campaigns/edit', campaign.id]" 
+               class="btn btn-primary">
+              <i class="fas fa-edit me-2"></i>Edit Campaign
+            </a>
+            
+            <a *ngIf="isPanelist && campaign.statut === 'ACTIVE'" 
+               [routerLink]="['/feedback', campaign.id]" 
+               class="btn btn-primary">
+              <i class="fas fa-comment me-2"></i>Provide Feedback
+            </a>
+            
+            <a *ngIf="isAdvertiser && campaign.statut === 'TERMINEE' && !campaign.resultatAnalyse" 
+               (click)="generateAnalysis()" 
+               class="btn btn-info">
+              <i class="fas fa-chart-bar me-2"></i>Generate Analysis
+            </a>
+            
+            <a routerLink="/campaigns" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Back to Campaigns
+            </a>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <img class="img-fluid rounded" src="/assets/img/portfolio/{{ campaign.id % 6 + 1 }}.jpg" alt="{{ campaign.nom }}" />
+        </div>
+      </div>
+      
+      <div class="row mt-5" *ngIf="campaign.produit">
+        <div class="col-md-12">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h4>Product Information</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-8">
+                  <h5>{{ campaign.produit.nom }}</h5>
+                  <p>{{ campaign.produit.description }}</p>
+                  <p><strong>Category:</strong> {{ campaign.produit.categorie }}</p>
+                  <p *ngIf="campaign.produit.noteMoyenne > 0">
+                    <strong>Average Rating:</strong> 
+                    <span class="text-warning">
+                      <i *ngFor="let star of [1,2,3,4,5]" 
+                         class="fas" 
+                         [ngClass]="{'fa-star': star <= campaign.produit.noteMoyenne, 'fa-star-half-alt': star - 0.5 <= campaign.produit.noteMoyenne && star > campaign.produit.noteMoyenne, 'fa-star-o': star > campaign.produit.noteMoyenne && star - 0.5 > campaign.produit.noteMoyenne}">
+                      </i>
+                      {{ campaign.produit.noteMoyenne | number:'1.1-1' }}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4" *ngIf="feedbacks.length > 0">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h4 class="mb-0">Feedback</h4>
+              <span class="badge bg-primary">{{ feedbacks.length }} Responses</span>
+            </div>
+            <div class="card-body">
+              <div *ngFor="let feedback of feedbacks" class="border-bottom py-3">
+                <div class="d-flex justify-content-between">
+                  <h5>Rating: 
+                    <span class="text-warning">
+                      <i *ngFor="let star of [1,2,3,4,5]" 
+                         class="fas" 
+                         [ngClass]="{'fa-star': star <= feedback.note, 'fa-star-half-alt': star - 0.5 <= feedback.note && star > feedback.note, 'fa-star-o': star > feedback.note && star - 0.5 > feedback.note}">
+                      </i>
+                      {{ feedback.note }}
+                    </span>
+                  </h5>
+                  <small class="text-muted">{{ feedback.date | date }}</small>
+                </div>
+                <p>{{ feedback.commentaire }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row mt-4" *ngIf="campaign.resultatAnalyse">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Analysis Results</h4>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h5>Average Rating</h5>
+                  <div class="display-4 text-warning">
+                    {{ campaign.resultatAnalyse.resultats['note_moyenne'] | number:'1.1-1' }}
+                    <small>/5</small>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <h5>Participation Rate</h5>
+                  <div class="display-4">
+                    {{ campaign.resultatAnalyse.resultats['taux_participation'] | number:'1.0-0' }}%
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  <h5>Rating Distribution</h5>
+                  <div class="progress mb-2" style="height: 25px;" *ngFor="let i of [5,4,3,2,1]">
+                    <div class="progress-bar" 
+                         [ngStyle]="{'width': (campaign.resultatAnalyse.resultats['pourcentage_note_' + i] || 0) + '%'}"
+                         [ngClass]="{
+                           'bg-success': i >= 4,
+                           'bg-primary': i === 3,
+                           'bg-warning': i === 2,
+                           'bg-danger': i <= 1
+                         }">
+                      {{ i }} Stars: {{ campaign.resultatAnalyse.resultats['pourcentage_note_' + i] | number:'1.0-0' }}%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container" *ngIf="!campaign && !loading">
+      <div class="text-center py-5">
+        <h2>Campaign Not Found</h2>
+        <p>The campaign you are looking for does not exist or you don't have permission to view it.</p>
+        <a routerLink="/campaigns" class="btn btn-primary">Back to Campaigns</a>
+      </div>
+    </div>
+    
+    <div class="container" *ngIf="loading">
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading campaign details...</p>
+      </div>
+    </div>
+  </section>

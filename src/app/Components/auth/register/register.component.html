@@ -1,0 +1,139 @@
+<section class="page-section bg-light" style="padding-top: 12rem;">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card shadow">
+            <div class="card-body p-5">
+              <h2 class="text-center mb-4">Register</h2>
+              
+              <div *ngIf="error" class="alert alert-danger">
+                {{ error }}
+              </div>
+              
+              <form [formGroup]="registerForm" > <!--(ngSubmit)="onSubmit()"-->
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="nom" class="form-label">Name</label>
+                    <input 
+                      type="text" 
+                      id="nom" 
+                      formControlName="nom" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': submitted && f['nom'].errors}"
+                    /> 
+                    <div *ngIf="submitted && f['nom'].errors" class="invalid-feedback">
+                      <div *ngIf="f['nom'].errors['required']">Name is required</div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      formControlName="email" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': submitted && f['email'].errors}"
+                    />
+                    <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                      <div *ngIf="f['email'].errors['required']">Email is required</div>
+                      <div *ngIf="f['email'].errors['email']">Email must be valid</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="motDePasse" class="form-label">Password</label>
+                    <input 
+                      type="password" 
+                      id="motDePasse" 
+                      formControlName="motDePasse" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': submitted && f['motDePasse'].errors}"
+                    />
+                    <div *ngIf="submitted && f['motDePasse'].errors" class="invalid-feedback">
+                      <div *ngIf="f['motDePasse'].errors['required']">Password is required</div>
+                      <div *ngIf="f['motDePasse'].errors['minlength']">Password must be at least 6 characters</div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input 
+                      type="password" 
+                      id="confirmPassword" 
+                      formControlName="confirmPassword" 
+                      class="form-control" 
+                      [ngClass]="{'is-invalid': submitted && f['confirmPassword'].errors}"
+                    />
+                    <div *ngIf="submitted && f['confirmPassword'].errors" class="invalid-feedback">
+                      <div *ngIf="f['confirmPassword'].errors['required']">Confirm Password is required</div>
+                      <div *ngIf="f['confirmPassword'].errors['mustMatch']">Passwords must match</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label for="role" class="form-label">Register as</label>
+                  <select 
+                    id="role" 
+                    formControlName="role" 
+                    class="form-select" 
+                    [ngClass]="{'is-invalid': submitted && f['role'].errors}"
+                    (change)="onRoleChange()"
+                  >
+                    <option value="">Select role</option>
+                    <option value="ANNONCEUR">Advertiser</option>
+                    <option value="PANELISTE">Panelist</option>
+                  </select>
+                  <div *ngIf="submitted && f['role'].errors" class="invalid-feedback">
+                    <div *ngIf="f['role'].errors['required']">Role is required</div>
+                  </div>
+                </div>
+                
+                <div *ngIf="f['role'].value === 'ANNONCEUR'" class="mb-3">
+                  <label for="entreprise" class="form-label">Company</label>
+                  <input 
+                    type="text" 
+                    id="entreprise" 
+                    formControlName="entreprise" 
+                    class="form-control" 
+                    [ngClass]="{'is-invalid': submitted && f['entreprise'].errors}"
+                  />
+                  <div *ngIf="submitted && f['entreprise'].errors" class="invalid-feedback">
+                    <div *ngIf="f['entreprise'].errors['required']">Company is required</div>
+                  </div>
+                </div>
+                
+                <div *ngIf="f['role'].value === 'PANELISTE'" class="mb-3">
+                  <label for="interets" class="form-label">Interests (comma separated)</label>
+                  <input 
+                    type="text" 
+                    id="interets" 
+                    formControlName="interets" 
+                    class="form-control" 
+                    [ngClass]="{'is-invalid': submitted && f['interets'].errors}"
+                  />
+                  <div *ngIf="submitted && f['interets'].errors" class="invalid-feedback">
+                    <div *ngIf="f['interets'].errors['required']">Interests are required</div>
+                  </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                  <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm me-1"></span>
+                    Register
+                  </button>
+                </div>
+              </form>
+              
+              <div class="text-center mt-3">
+                <p>Already have an account? <a routerLink="/login">Login</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
