@@ -1,0 +1,19 @@
+.rating-stars {
+  display: flex;
+  font-size: 24px;
+}
+
+.star-rating {
+  color: #ccc;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.star-rating.active {
+  color: #ffc107;
+}
+
+.rating-value {
+  font-size: 18px;
+  font-weight: bold;
+}

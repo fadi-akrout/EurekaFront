@@ -5,7 +5,7 @@ export interface Campaign {
   dateDebut: Date
   dateFin: Date
   statut: "PLANIFIEE" | "ACTIVE" | "TERMINEE"
-  annonceur?: number
+  annonceurId?: number  // Changed from annonceur to annonceurId to match backend expectations
   produit?: Product
   formulaire?: Form
   resultatAnalyse?: AnalysisResult
@@ -76,4 +76,5 @@ export interface CampaignCompleteRequest {
   campagne: Campaign
   produit: Product
   formulaire: Form
+  // annonceurId removed as it's now automatically set by the backend
 }

@@ -1,0 +1,121 @@
+<div class="participation-history-container" style="padding-top: 9rem;">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1>My Campaign Participations</h1>
+      <div class="user-type-badge badge-paneliste">
+        PANELIST
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="loadParticipationHistory()" [disabled]="isLoading">
+      🔄 Refresh
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button class="close-btn" (click)="error = null">&times;</button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading participation data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!isLoading" class="main-content">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon total-icon">
+          📊
+        </div>
+        <div class="stat-content">
+          <h3>{{ participatingCampaigns.length }}</h3>
+          <p>Total Participations</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon active-icon">
+          🔵
+        </div>
+        <div class="stat-content">
+          <h3>{{ getActiveCampaignsCount() }}</h3>
+          <p>Active Campaigns</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon completed-icon">
+          ✅
+        </div>
+        <div class="stat-content">
+          <h3>{{ getCompletedCampaignsCount() }}</h3>
+          <p>Completed Campaigns</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="participatingCampaigns.length === 0" class="empty-state">
+      <div class="empty-state-icon">📋</div>
+      <h3>No Campaign Participations Yet</h3>
+      <p>You haven't participated in any campaigns so far. Discover available campaigns and start participating!</p>
+      <a routerLink="/campaigns" class="btn btn-primary mt-3">
+        Find Available Campaigns
+      </a>
+    </div>
+    
+    <!-- Campaigns Table -->
+    <div *ngIf="participatingCampaigns.length > 0" class="users-table-container">
+      <h2>Your Campaign History</h2>
+      
+      <div class="table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Campaign</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let campaign of participatingCampaigns">
+              <td>
+                <div class="campaign-cell">
+                  <div class="campaign-avatar">
+                    {{ campaign.nom.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ campaign.nom }}</span>
+                </div>
+              </td>
+              <td>{{ campaign.dateDebut | date:'mediumDate' }}</td>
+              <td>{{ campaign.dateFin | date:'mediumDate' }}</td>
+              <td>
+                <span class="activity-status" [class]="campaign.statut.toLowerCase()">
+                  {{ campaign.statut }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <a [routerLink]="['/campaigns', campaign.id]" class="btn btn-sm btn-secondary">
+                    ✏️ View Details
+                  </a>
+                  <button *ngIf="campaign.statut === 'ACTIVE'" class="btn btn-sm btn-primary" 
+                          [routerLink]="['/campaigns', campaign.id, 'respond']">
+                    💬 Respond
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

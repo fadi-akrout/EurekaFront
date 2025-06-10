@@ -70,4 +70,55 @@ export class UserService {
   participateInCampaign(panelisteId: number, campaignId: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/panelistes/${panelisteId}/participer/${campaignId}`, {})
   }
+
+  // Admin management methods
+  updateUser(id: number, user: Partial<User>): Observable<User> {
+    return this.http.put<User>(`${this.apiUrl}/utilisateurs/${id}`, user)
+  }
+
+  deleteUser(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/utilisateurs/${id}`)
+  }
+
+  updateAdmin(id: number, admin: Partial<Admin>): Observable<Admin> {
+    return this.http.put<Admin>(`${this.apiUrl}/admins/${id}`, admin)
+  }
+
+  deleteAdmin(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/admins/${id}`)
+  }
+
+  updateAnnonceur(id: number, annonceur: Partial<Annonceur>): Observable<Annonceur> {
+    return this.http.put<Annonceur>(`${this.apiUrl}/annonceurs/${id}`, annonceur)
+  }
+
+  deleteAnnonceur(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/annonceurs/${id}`)
+  }
+
+  updatePaneliste(id: number, paneliste: Partial<Paneliste>): Observable<Paneliste> {
+    return this.http.put<Paneliste>(`${this.apiUrl}/panelistes/${id}`, paneliste)
+  }
+
+  deletePaneliste(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/panelistes/${id}`)
+  }
+
+  // Activity tracking methods
+  getUserActivity(userId: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/utilisateurs/${userId}/activity`)
+  }
+
+  getUserStats(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/utilisateurs/stats`)
+  }
+
+  getRecentUsers(limit: number = 10): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/utilisateurs/recent?limit=${limit}`)
+  }
+
+  // Get users with their campaign counts
+  getUsersWithCampaignCounts(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/utilisateurs/with-campaigns`)
+  }
 }

@@ -30,10 +30,20 @@
           </select>
         </div>
         
-        <div class="col-md-2" > <!--*ngIf="isAdvertiser"-->
+        <div class="col-md-2" *ngIf="isAdvertiser">
           <a routerLink="/campaigns/new" class="btn btn-primary w-100">
             <i class="fas fa-plus me-2"></i>New Campaign
           </a>
+        </div>
+      </div>
+      
+      <!-- Panelist Information Banner -->
+      <div class="row mb-4" *ngIf="isPanelist">
+        <div class="col-12">
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Welcome, {{ this.currentUser?.nom }}</strong> Browse available campaigns below. Click on any campaign to view details and provide feedback for active campaigns.
+          </div>
         </div>
       </div>
       

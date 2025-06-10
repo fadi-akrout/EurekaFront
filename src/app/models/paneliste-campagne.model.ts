@@ -9,6 +9,7 @@ export interface PanelisteCampagne {
 }
 
 export enum PanelisteCampagneStatut {
+  PENDING = 'PENDING',
   INVITE = 'INVITE',
   ACCEPTE = 'ACCEPTE',
   REFUSE = 'REFUSE',

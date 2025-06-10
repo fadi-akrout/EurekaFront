@@ -4,7 +4,8 @@ export interface User {
   email: string
   motDePasse?: string
   dateInscription: Date
-  role?: string
+  role?: string // Kept for backward compatibility
+  userType?: string // Added for new user type system
 }
 
 export interface Admin extends User {

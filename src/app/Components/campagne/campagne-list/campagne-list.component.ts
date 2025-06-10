@@ -4,7 +4,8 @@ import { User } from '../../../models/utilisateur.model';
 import { CommonModule } from "@angular/common"
 import { RouterLink } from "@angular/router"
 import { FormsModule } from "@angular/forms"
-import  { CampagneService } from "../../../Services/campagne.service"
+import { CampagneService } from "../../../Services/campagne.service"
+import { AuthService } from "../../../Services/auth.service"
 @Component({
   selector: 'app-campagne-list',
   standalone: true,
@@ -18,26 +19,39 @@ export class CampagneListComponent implements OnInit {
   searchTerm = ""
   statusFilter = "ALL"
   currentUser: User | null = null
-
+   
   constructor(
     private campaignService: CampagneService,
-   // private authService: AuthService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
-    //this.currentUser = this.authService.getCurrentUser()
-    this.loadCampaigns()
+    this.currentUser = this.authService.currentUserValue;
+    this.loadCampaigns();
   }
 
   get isAdvertiser(): boolean {
-    return this.currentUser?.role === "ANNONCEUR"
+    return this.currentUser?.role === "ANNONCEUR" || this.currentUser?.userType === "ANNONCEUR"
+  }
+  
+  get isPanelist(): boolean {
+    return this.currentUser?.role === "PANELISTE" || this.currentUser?.userType === "PANELISTE"
   }
 
   loadCampaigns(): void {
-    this.campaignService.getAllCampaigns().subscribe((campaigns) => {
-      this.campaigns = campaigns
-      this.filterCampaigns()
-    })
+    console.log("Current user before loading campaigns:", this.currentUser);
+    
+    this.campaignService.getAllCampaigns().subscribe({
+      next: (campaigns) => {
+        console.log("Raw campaigns loaded:", campaigns);
+        this.campaigns = campaigns;
+        this.filterCampaigns();
+        console.log("Processed campaigns:", this.campaigns);
+      },
+      error: (error) => {
+        console.error("Error loading campaigns:", error);
+      }
+    });
   }
 
   filterCampaigns(): void {

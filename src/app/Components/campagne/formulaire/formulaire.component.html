@@ -1,0 +1,76 @@
+<section class="page-section" style="padding-top: 12rem;">
+  <div class="container" *ngIf="campaign && !loading">
+    <div class="row">
+      <div class="col-lg-12">
+        <h2 class="section-heading text-center mb-5">{{ campaign.nom }} - Formulaire</h2>
+        
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Campaign Formulaire</h4>
+          </div>
+          <div class="card-body">
+            <p class="lead">Please complete the following form to participate in this campaign.</p>
+            
+            <!-- Placeholder for dynamic form content -->
+            <form>
+              <div class="mb-3">
+                <label for="question1" class="form-label">What do you think about the product?</label>
+                <textarea class="form-control" id="question1" rows="3"></textarea>
+              </div>
+              
+              <div class="mb-3">
+                <label for="question2" class="form-label">How likely are you to recommend this product?</label>
+                <select class="form-select" id="question2">
+                  <option value="">Select an option</option>
+                  <option value="5">Very likely</option>
+                  <option value="4">Likely</option>
+                  <option value="3">Neutral</option>
+                  <option value="2">Unlikely</option>
+                  <option value="1">Very unlikely</option>
+                </select>
+              </div>
+              
+              <div class="mb-3">
+                <label class="form-label">Which features do you like? (Select all that apply)</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="design" id="feature1">
+                  <label class="form-check-label" for="feature1">Design</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="functionality" id="feature2">
+                  <label class="form-check-label" for="feature2">Functionality</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="price" id="feature3">
+                  <label class="form-check-label" for="feature3">Price</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="quality" id="feature4">
+                  <label class="form-check-label" for="feature4">Quality</label>
+                </div>
+              </div>
+              
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a [routerLink]="['/campaigns', campaignId]" class="btn btn-outline-secondary me-md-2">
+                  <i class="fas fa-arrow-left me-2"></i>Back to Campaign
+                </a>
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-paper-plane me-2"></i>Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container" *ngIf="loading">
+    <div class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3">Loading formulaire...</p>
+    </div>
+  </div>
+</section>

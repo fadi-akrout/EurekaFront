@@ -1,0 +1,472 @@
+<div class="admin-users-container" style="padding-top: 9rem;">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <h1>User Management</h1>
+      <div class="access-level-indicator" [class]="hasSuperAdminAccess() ? 'super-admin' : 'limited-admin'">
+        {{ getAccessLevelDescription() }}
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="refreshData()" [disabled]="loading">
+      🔄 Refresh
+    </button>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+    <button class="close-btn" (click)="error = null">&times;</button>
+  </div>
+
+  <!-- Warning Message -->
+  <div *ngIf="warning" class="alert alert-warning">
+    {{ warning }}
+    <button class="close-btn" (click)="warning = null">&times;</button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading user data...</p>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="!loading" class="main-content">
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'stats'"
+        (click)="setActiveTab('stats')">
+        📊 Statistics
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'all'"
+        (click)="setActiveTab('all')">
+        👥 All Users ({{ allUsers.length }})
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'admins'"
+        (click)="setActiveTab('admins')">
+        👑 Admins ({{ admins.length }})
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'annonceurs'"
+        (click)="setActiveTab('annonceurs')">
+        🏢 Annonceurs ({{ annonceurs.length }})
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'panelistes'"
+        (click)="setActiveTab('panelistes')">
+        👨‍👩‍👧‍👦 Panelistes ({{ panelistes.length }})
+      </button>
+    </div>
+
+    <!-- Statistics Tab -->
+    <div *ngIf="activeTab === 'stats'" class="stats-container">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon admin-icon">
+            👑
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats.totalAdmins }}</h3>
+            <p>Total Admins</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon annonceur-icon">
+            🏢
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats.totalAnnonceurs }}</h3>
+            <p>Total Annonceurs</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon paneliste-icon">
+            👨‍👩‍👧‍👦
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats.totalPanelistes }}</h3>
+            <p>Total Panelistes</p>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon total-icon">
+            👥
+          </div>
+          <div class="stat-content">
+            <h3>{{ userStats.totalUsers }}</h3>
+            <p>Total Users</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Registrations -->
+      <div class="recent-registrations">
+        <h2>Recent Registrations</h2>
+        <div *ngIf="userStats.recentRegistrations.length === 0" class="no-data">
+          No recent registrations
+        </div>
+        <div *ngIf="userStats.recentRegistrations.length > 0" class="recent-users-list">
+          <div *ngFor="let user of userStats.recentRegistrations" class="recent-user-card">
+            <div class="user-avatar">
+              {{ user.nom.charAt(0).toUpperCase() }}
+            </div>
+            <div class="user-info">
+              <h4>{{ user.nom }}</h4>
+              <p>{{ user.email }}</p>
+              <span class="user-type-badge" [class]="getUserTypeClass(user)">
+                {{ getUserTypeLabel(user) }}
+              </span>
+            </div>
+            <div class="registration-date">
+              {{ formatDate(user.dateInscription) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div *ngIf="activeTab !== 'stats'" class="users-table-container">
+      <div class="table-wrapper">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Registration Date</th>
+              <th>Activity Status</th>
+              <th *ngIf="activeTab === 'all' || activeTab === 'panelistes' || activeTab === 'annonceurs'">
+                <span *ngIf="activeTab === 'panelistes' || activeTab === 'all'">Campaigns</span>
+                <span *ngIf="activeTab === 'annonceurs'">Campaigns Created</span>
+              </th>
+              <th *ngIf="activeTab === 'all' || activeTab === 'annonceurs' || activeTab === 'panelistes'">
+                <span *ngIf="activeTab === 'annonceurs' || activeTab === 'all'">Company</span>
+                <span *ngIf="activeTab === 'panelistes'">Interests</span>
+              </th>
+              <th *ngIf="activeTab === 'admins'">Permissions</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- All Users -->
+            <tr *ngFor="let user of allUsers" [hidden]="activeTab !== 'all'">
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ user.nom.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ user.nom }}</span>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span class="user-type-badge" [class]="getUserTypeClass(user)">
+                  {{ getUserTypeLabel(user) }}
+                </span>
+              </td>
+              <td>{{ formatDate(user.dateInscription) }}</td>
+              <td>
+                <span class="activity-status" [class]="getActivityStatusClass(user)">
+                  {{ getActivityStatus(user) }}
+                </span>
+              </td>
+              <td>
+                <div class="campaign-info">
+                  <div *ngIf="getCampaignsParticipated(user) > 0" class="campaign-stat participated">
+                    <span class="count">{{ getCampaignsParticipated(user) }}</span>
+                    <span class="label">participated</span>
+                  </div>
+                  <div *ngIf="getCampaignsCreated(user) > 0" class="campaign-stat created">
+                    <span class="count">{{ getCampaignsCreated(user) }}</span>
+                    <span class="label">created</span>
+                  </div>
+                  <div *ngIf="getCampaignsParticipated(user) === 0 && getCampaignsCreated(user) === 0" class="no-campaigns">
+                    No campaigns
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span *ngIf="getUserEntreprise(user)">{{ getUserEntreprise(user) }}</span>
+                <span *ngIf="!getUserEntreprise(user)">-</span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-secondary" (click)="openEditModal(user)">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="openDeleteModal(user)">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Admins -->
+            <tr *ngFor="let admin of admins" [hidden]="activeTab !== 'admins'">
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ admin.nom.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ admin.nom }}</span>
+                </div>
+              </td>
+              <td>{{ admin.email }}</td>
+              <td>
+                <span class="user-type-badge badge-admin">ADMIN</span>
+              </td>
+              <td>{{ formatDate(admin.dateInscription) }}</td>
+              <td>
+                <span class="activity-status">
+                  {{ getActivityStatus(admin) }}
+                </span>
+              </td>
+              <td>
+                <span class="permissions">
+                  {{ getUserPermissions(admin) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-secondary" (click)="openEditModal(admin)">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="openDeleteModal(admin)">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Annonceurs -->
+            <tr *ngFor="let annonceur of annonceurs" [hidden]="activeTab !== 'annonceurs'">
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ annonceur.nom.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ annonceur.nom }}</span>
+                </div>
+              </td>
+              <td>{{ annonceur.email }}</td>
+              <td>
+                <span class="user-type-badge badge-annonceur">ANNONCEUR</span>
+              </td>
+              <td>{{ formatDate(annonceur.dateInscription) }}</td>
+              <td>
+                <span class="activity-status">
+                  {{ getActivityStatus(annonceur) }}
+                </span>
+              </td>
+              <td>
+                <div class="campaign-info">
+                  <div *ngIf="getCampaignsCreated(annonceur) > 0" class="campaign-stat created">
+                    <span class="count">{{ getCampaignsCreated(annonceur) }}</span>
+                    <span class="label">campaigns created</span>
+                  </div>
+                  <div *ngIf="getCampaignsCreated(annonceur) === 0" class="no-campaigns">
+                    No campaigns created
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span *ngIf="getUserEntreprise(annonceur)">{{ getUserEntreprise(annonceur) }}</span>
+                <span *ngIf="!getUserEntreprise(annonceur)">-</span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-secondary" (click)="openEditModal(annonceur)">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="openDeleteModal(annonceur)">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Panelistes -->
+            <tr *ngFor="let paneliste of panelistes" [hidden]="activeTab !== 'panelistes'">
+              <td>
+                <div class="user-cell">
+                  <div class="user-avatar">
+                    {{ paneliste.nom.charAt(0).toUpperCase() }}
+                  </div>
+                  <span>{{ paneliste.nom }}</span>
+                </div>
+              </td>
+              <td>{{ paneliste.email }}</td>
+              <td>
+                <span class="user-type-badge badge-paneliste">PANELISTE</span>
+              </td>
+              <td>{{ formatDate(paneliste.dateInscription) }}</td>
+              <td>
+                <span class="activity-status">
+                  {{ getActivityStatus(paneliste) }}
+                </span>
+              </td>
+              <td>
+                <div class="campaign-info">
+                  <div *ngIf="getCampaignsParticipated(paneliste) > 0" class="campaign-stat participated">
+                    <span class="count">{{ getCampaignsParticipated(paneliste) }}</span>
+                    <span class="label">campaigns participated</span>
+                  </div>
+                  <div *ngIf="getCampaignsParticipated(paneliste) === 0" class="no-campaigns">
+                    No campaigns participated
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="interests">
+                  {{ getUserInterets(paneliste) }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-secondary" (click)="openEditModal(paneliste)">
+                    ✏️ Edit
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="openDeleteModal(paneliste)">
+                    🗑️ Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit User Modal -->
+  <div *ngIf="showEditModal" class="modal-overlay" (click)="closeEditModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Edit User</h2>
+        <button class="close-btn" (click)="closeEditModal()">&times;</button>
+      </div>
+      
+      <form [formGroup]="editForm" (ngSubmit)="saveUser()">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="nom">Name</label>
+            <input 
+              type="text" 
+              id="nom" 
+              formControlName="nom" 
+              class="form-control"
+              [class.error]="editForm.get('nom')?.invalid && editForm.get('nom')?.touched">
+            <div *ngIf="editForm.get('nom')?.invalid && editForm.get('nom')?.touched" class="error-message">
+              Name is required and must be at least 2 characters long.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              class="form-control"
+              [class.error]="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+            <div *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched" class="error-message">
+              Please enter a valid email address.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="userType">Role</label>
+            <select 
+              id="userType" 
+              formControlName="userType" 
+              class="form-control"
+              [class.error]="editForm.get('userType')?.invalid && editForm.get('userType')?.touched">
+              <option value="">Select a role</option>
+              <option value="ADMIN">Admin</option>
+              <option value="ANNONCEUR">Annonceur</option>
+              <option value="PANELISTE">Paneliste</option>
+            </select>
+            <div *ngIf="editForm.get('userType')?.invalid && editForm.get('userType')?.touched" class="error-message">
+              Please select a role.
+            </div>
+          </div>
+
+          <!-- Role-specific fields -->
+          <div *ngIf="editForm.get('userType')?.value === 'ANNONCEUR'" class="form-group">
+            <label for="entreprise">Company</label>
+            <input 
+              type="text" 
+              id="entreprise" 
+              formControlName="entreprise" 
+              class="form-control">
+          </div>
+
+          <div *ngIf="editForm.get('userType')?.value === 'PANELISTE'" class="form-group">
+            <label for="interets">Interests (comma-separated)</label>
+            <textarea 
+              id="interets" 
+              formControlName="interets" 
+              class="form-control"
+              rows="3"
+              placeholder="Technology, Sports, Music, etc."></textarea>
+          </div>
+
+          <div *ngIf="editForm.get('userType')?.value === 'ADMIN'" class="form-group">
+            <label for="permissions">Permissions (comma-separated)</label>
+            <textarea 
+              id="permissions" 
+              formControlName="permissions" 
+              class="form-control"
+              rows="3"
+              placeholder="user_management, campaign_management, etc."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Confirm Delete</h2>
+        <button class="close-btn" (click)="closeDeleteModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <p>Are you sure you want to delete the user <strong>{{ userToDelete?.nom }}</strong>?</p>
+        <p class="warning">This action cannot be undone.</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-danger" (click)="confirmDelete()">
+          Delete User
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

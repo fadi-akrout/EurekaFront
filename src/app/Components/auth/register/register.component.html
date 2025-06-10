@@ -10,7 +10,7 @@
                 {{ error }}
               </div>
               
-              <form [formGroup]="registerForm" > <!--(ngSubmit)="onSubmit()"-->
+              <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
                 <div class="row">
                   <div class="col-md-6 mb-3">
                     <label for="nom" class="form-label">Name</label>
@@ -75,24 +75,25 @@
                 </div>
                 
                 <div class="mb-3">
-                  <label for="role" class="form-label">Register as</label>
+                  <label for="userType" class="form-label">Register as</label>
                   <select 
-                    id="role" 
-                    formControlName="role" 
+                    id="userType" 
+                    formControlName="userType" 
                     class="form-select" 
-                    [ngClass]="{'is-invalid': submitted && f['role'].errors}"
+                    [ngClass]="{'is-invalid': submitted && f['userType'].errors}"
                     (change)="onRoleChange()"
                   >
-                    <option value="">Select role</option>
+                    <option value="">Select user type</option>
+                    <option value="ADMIN">Administrator</option>
                     <option value="ANNONCEUR">Advertiser</option>
                     <option value="PANELISTE">Panelist</option>
                   </select>
-                  <div *ngIf="submitted && f['role'].errors" class="invalid-feedback">
-                    <div *ngIf="f['role'].errors['required']">Role is required</div>
+                  <div *ngIf="submitted && f['userType'].errors" class="invalid-feedback">
+                    <div *ngIf="f['userType'].errors['required']">User type is required</div>
                   </div>
                 </div>
                 
-                <div *ngIf="f['role'].value === 'ANNONCEUR'" class="mb-3">
+                <div *ngIf="f['userType'].value === 'ANNONCEUR'" class="mb-3">
                   <label for="entreprise" class="form-label">Company</label>
                   <input 
                     type="text" 
@@ -106,7 +107,7 @@
                   </div>
                 </div>
                 
-                <div *ngIf="f['role'].value === 'PANELISTE'" class="mb-3">
+                <div *ngIf="f['userType'].value === 'PANELISTE'" class="mb-3">
                   <label for="interets" class="form-label">Interests (comma separated)</label>
                   <input 
                     type="text" 
@@ -118,6 +119,24 @@
                   <div *ngIf="submitted && f['interets'].errors" class="invalid-feedback">
                     <div *ngIf="f['interets'].errors['required']">Interests are required</div>
                   </div>
+                </div>
+
+                <div *ngIf="f['userType'].value === 'ADMIN'" class="mb-3">
+                  <label for="permissions" class="form-label">Admin Permissions (comma separated)</label>
+                  <input 
+                    type="text" 
+                    id="permissions" 
+                    formControlName="permissions" 
+                    class="form-control" 
+                    [ngClass]="{'is-invalid': submitted && f['permissions'].errors}"
+                    placeholder="e.g., USER_MANAGEMENT, CAMPAIGN_MANAGEMENT, SYSTEM_ADMIN"
+                  />
+                  <div *ngIf="submitted && f['permissions'].errors" class="invalid-feedback">
+                    <div *ngIf="f['permissions'].errors['required']">Admin permissions are required</div>
+                  </div>
+                  <small class="form-text text-muted">
+                    Common permissions: USER_MANAGEMENT, CAMPAIGN_MANAGEMENT, SYSTEM_ADMIN, ANALYTICS_VIEW
+                  </small>
                 </div>
                 
                 <div class="d-grid gap-2">

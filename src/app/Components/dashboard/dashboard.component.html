@@ -29,7 +29,10 @@
             <div class="card-body">
               <h5 class="card-title">Participating Campaigns</h5>
               <p class="card-text display-4">{{ participatingCampaigns.length }}</p>
-              <a routerLink="/campaigns" class="btn btn-primary">Find Campaigns</a>
+              <div class="d-flex gap-2">
+                <a routerLink="/my-participations" class="btn btn-primary">View Participations</a>
+                <a routerLink="/campaigns" class="btn btn-outline-primary">Find More</a>
+              </div>
             </div>
           </div>
         </div>
@@ -39,7 +42,7 @@
             <div class="card-body">
               <h5 class="card-title">Total Users</h5>
               <p class="card-text display-4">{{ totalUsers }}</p>
-              <a href="#" class="btn btn-primary">Manage Users</a>
+              <a routerLink="/admin/users" class="btn btn-primary">Manage Users</a>
             </div>
           </div>
         </div>
@@ -73,8 +76,9 @@
                   <td>{{ campaign.dateFin | date }}</td>
                   <td>
                     <a [routerLink]="['/campaigns', campaign.id]" class="btn btn-sm btn-primary me-2">View</a>
-               <!--*ngIf="isAdvertiser && campaign.statut !== 'TERMINEE'"-->     <a  
-                       [routerLink]="['/campaigns/edit', campaign.id]" 
+                    <!-- Only show edit button for campaign owners or admins -->
+                    <a *ngIf="(isAdvertiser && campaign.annonceurId === currentUser?.id && campaign.statut !== 'TERMINEE') || isAdmin" 
+                       [routerLink]="['/campaigns', campaign.id, 'edit']" 
                        class="btn btn-sm btn-secondary">Edit</a>
                   </td>
                 </tr>

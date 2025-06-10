@@ -1,0 +1,151 @@
+<div class="demo-container" >
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-12">
+        <h1 class="text-center mb-5">🎨 Participation Modal Showcase</h1>
+        <p class="text-center text-muted mb-5">
+          Experience our beautiful, classy participation modals with custom branded colors and smooth animations.
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Success Modals -->
+      <div class="col-md-6 col-lg-4">
+        <div class="demo-card success-card">
+          <div class="demo-card-header">
+            <i class="fas fa-check-circle"></i>
+            <h5>Success Modals</h5>
+          </div>
+          <div class="demo-card-body">
+            <button class="btn btn-success mb-2 w-100" (click)="showApprovedModal()">
+              <i class="fas fa-user-check me-2"></i>Participation Approved
+            </button>
+            <button class="btn btn-success mb-2 w-100" (click)="showSubmittedModal()">
+              <i class="fas fa-paper-plane me-2"></i>Request Submitted
+            </button>
+            <button class="btn btn-success mb-2 w-100" (click)="showJoinConfirmationModal()">
+              <i class="fas fa-handshake me-2"></i>Join Confirmation
+            </button>
+            <button class="btn btn-success mb-2 w-100" (click)="showWelcomeModal()">
+              <i class="fas fa-star me-2"></i>Welcome Message
+            </button>
+            <button class="btn btn-success w-100" (click)="showCustomSuccessModal()">
+              <i class="fas fa-trophy me-2"></i>Custom Success
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Modals -->
+      <div class="col-md-6 col-lg-4">
+        <div class="demo-card info-card">
+          <div class="demo-card-header">
+            <i class="fas fa-info-circle"></i>
+            <h5>Info Modals</h5>
+          </div>
+          <div class="demo-card-body">
+            <button class="btn btn-info mb-2 w-100" (click)="showRejectedModal()">
+              <i class="fas fa-user-times me-2"></i>Participation Declined
+            </button>
+            <button class="btn btn-info mb-2 w-100" (click)="showStatusUpdateModal()">
+              <i class="fas fa-bell me-2"></i>Status Update
+            </button>
+            <button class="btn btn-info w-100" (click)="showCustomInfoModal()">
+              <i class="fas fa-clipboard-list me-2"></i>Custom Info
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Warning/Error Modals -->
+      <div class="col-md-6 col-lg-4">
+        <div class="demo-card warning-card">
+          <div class="demo-card-header">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h5>Warning & Error</h5>
+          </div>
+          <div class="demo-card-body">
+            <button class="btn btn-warning mb-2 w-100" (click)="showErrorModal()">
+              <i class="fas fa-wifi me-2"></i>Network Error
+            </button>
+            <button class="btn btn-warning w-100" (click)="showCustomWarningModal()">
+              <i class="fas fa-clock me-2"></i>Deadline Warning
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="features-section">
+          <h3 class="text-center mb-4">✨ Modal Features</h3>
+          <div class="row g-4">
+            <div class="col-md-3">
+              <div class="feature-item">
+                <i class="fas fa-palette feature-icon"></i>
+                <h6>Custom Branded Colors</h6>
+                <p>Beautiful gradient backgrounds with custom color schemes</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="feature-item">
+                <i class="fas fa-magic feature-icon"></i>
+                <h6>Smooth Animations</h6>
+                <p>Elegant slide-in, bounce, and floating animations</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="feature-item">
+                <i class="fas fa-mobile-alt feature-icon"></i>
+                <h6>Responsive Design</h6>
+                <p>Perfectly optimized for all screen sizes and devices</p>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="feature-item">
+                <i class="fas fa-cogs feature-icon"></i>
+                <h6>Auto-Close Options</h6>
+                <p>Configurable auto-close timers for better UX</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage Instructions -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="usage-section">
+          <h3 class="text-center mb-4">🚀 How to Use</h3>
+          <div class="code-example">
+            <pre><code>// Inject the service
+constructor(private modalService: ParticipationModalService) {}
+
+// Show success modal
+this.modalService.showParticipationApproved(
+  'John Doe', 
+  'Campaign Name', 
+  'john@example.com'
+);
+
+// Show custom modal
+this.modalService.showSuccess(
+  'Custom Title',
+  'Custom message here',
+  [
+    { label: 'Detail 1', value: 'Value 1' },
+    { label: 'Detail 2', value: 'Value 2' }
+  ]
+);</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Participation Modal -->
+  <app-participation-modal></app-participation-modal>

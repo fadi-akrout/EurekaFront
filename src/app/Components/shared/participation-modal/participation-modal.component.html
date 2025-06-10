@@ -1,0 +1,39 @@
+<!-- Participation Message Modal -->
+<div class="participation-modal-overlay" *ngIf="showModal && modalConfig" (click)="closeModal()">
+  <div class="participation-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header" [ngClass]="modalConfig.type">
+      <div class="modal-icon">
+        <i [class]="modalConfig.icon"></i>
+      </div>
+      <button class="modal-close" (click)="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <h3 class="modal-title">{{ modalConfig.title }}</h3>
+      <p class="modal-message">{{ modalConfig.message }}</p>
+      
+      <div class="modal-details" *ngIf="modalConfig.details && modalConfig.details.length > 0">
+        <div class="detail-item" *ngFor="let detail of modalConfig.details">
+          <span class="detail-label">{{ detail.label }}:</span>
+          <span class="detail-value">{{ detail.value }}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn btn-modal-primary" (click)="closeModal()">
+        <i class="fas fa-check"></i>
+        Got it!
+      </button>
+    </div>
+    
+    <!-- Decorative elements -->
+    <div class="modal-decoration">
+      <div class="decoration-circle circle-1"></div>
+      <div class="decoration-circle circle-2"></div>
+      <div class="decoration-circle circle-3"></div>
+    </div>
+  </div>
+</div>

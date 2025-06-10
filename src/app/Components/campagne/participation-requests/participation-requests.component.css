@@ -1,0 +1,270 @@
+.participation-requests-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  color: #333;
+  margin: 20px 0 10px 0;
+  font-weight: 600;
+}
+
+.campaign-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.campaign-info h3 {
+  color: #495057;
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.campaign-info p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.loading-container {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.alert {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  color: #721c24;
+}
+
+.no-requests {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state i {
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.empty-state h4 {
+  color: #6c757d;
+  margin-bottom: 10px;
+}
+
+.section-header {
+  margin-bottom: 25px;
+}
+
+.section-header h4 {
+  color: #495057;
+  margin: 0 0 5px 0;
+  font-weight: 600;
+}
+
+.section-header h4 i {
+  margin-right: 8px;
+  color: #ffc107;
+}
+
+.requests-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+}
+
+.request-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.request-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+.request-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.panelist-info h5 {
+  margin: 0 0 5px 0;
+  color: #495057;
+  font-weight: 600;
+}
+
+.panelist-info .email {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.request-date {
+  text-align: right;
+}
+
+.request-body {
+  margin-bottom: 20px;
+}
+
+.interests {
+  margin-bottom: 10px;
+}
+
+.interests strong {
+  color: #495057;
+  font-size: 0.9rem;
+}
+
+.interests-tags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.interest-tag {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.no-interests {
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.request-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #545b62;
+}
+
+.btn-success {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: #1e7e34;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .participation-requests-container {
+    padding: 15px;
+  }
+  
+  .requests-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .request-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .request-date {
+    text-align: left;
+  }
+  
+  .request-actions {
+    justify-content: stretch;
+  }
+  
+  .request-actions .btn {
+    flex: 1;
+  }
+}
